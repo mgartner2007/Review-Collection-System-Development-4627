@@ -8,12 +8,13 @@ import { useReview } from '../context/ReviewContext';
 import ReviewRequestForm from './ReviewRequestForm';
 import QuickStats from './QuickStats';
 import RecentReviews from './RecentReviews';
+import FeedbackAlerts from './FeedbackAlerts';
 
 const { FiPlus, FiSettings, FiAlertCircle } = FiIcons;
 
 const Dashboard = () => {
   const { business } = useBusiness();
-  const { reviews, getAnalytics } = useReview();
+  const { reviews, getAnalytics, pendingFeedbacks } = useReview();
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [analytics, setAnalytics] = useState({});
 
@@ -72,12 +73,22 @@ const Dashboard = () => {
         </div>
       </motion.div>
 
+      {/* Pending Feedback Alerts - New Section */}
+      {pendingFeedbacks && pendingFeedbacks.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <FeedbackAlerts />
+        </motion.div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           <QuickStats analytics={analytics} />
           <RecentReviews reviews={reviews.slice(0, 10)} />
         </div>
-        
         <div className="space-y-6">
           <motion.div
             initial={{ opacity: 0, x: 20 }}

@@ -5,19 +5,24 @@ import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 import { useReview } from '../context/ReviewContext';
 import { useBusiness } from '../context/BusinessContext';
+import DetailedFeedbackForm from './DetailedFeedbackForm';
+import ThankYouFeedback from './ThankYouFeedback';
 
 const { FiStar, FiSend, FiCheckCircle, FiExternalLink } = FiIcons;
 
 const ReviewForm = () => {
   const { reviewId } = useParams();
-  const { getReviewById, submitReview, trackClick } = useReview();
+  const { getReviewById, submitReview, trackClick, submitDetailedFeedback } = useReview();
   const { business } = useBusiness();
+  
   const [review, setReview] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(0);
+  const [showDetailedFeedback, setShowDetailedFeedback] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   useEffect(() => {
     const reviewData = getReviewById(reviewId);
@@ -30,8 +35,15 @@ const ReviewForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+    
     try {
+      // If rating is 3, show detailed feedback form instead of submitting
+      if (rating === 3) {
+        setShowDetailedFeedback(true);
+        setIsSubmitting(false);
+        return;
+      }
+      
       await submitReview(reviewId, rating, comment);
       setIsSubmitted(true);
       
@@ -47,6 +59,15 @@ const ReviewForm = () => {
       console.error('Error submitting review:', error);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDetailedFeedbackSubmit = async (feedbackData) => {
+    try {
+      await submitDetailedFeedback(reviewId, rating, comment, feedbackData);
+      setFeedbackSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting detailed feedback:', error);
     }
   };
 
@@ -69,6 +90,14 @@ const ReviewForm = () => {
           <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-neutral-600">Loading review form...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (feedbackSubmitted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 p-4">
+        <ThankYouFeedback onClose={() => setFeedbackSubmitted(false)} />
       </div>
     );
   }
@@ -114,6 +143,20 @@ const ReviewForm = () => {
     );
   }
 
+  if (showDetailedFeedback) {
+    return (
+      <div className="min-h-screen bg-neutral-50 py-8 px-4">
+        <div className="max-w-md mx-auto">
+          <DetailedFeedbackForm
+            onSubmit={handleDetailedFeedbackSubmit}
+            onCancel={() => setShowDetailedFeedback(false)}
+            customerEmail={review.customerEmail}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-neutral-50 py-8 px-4">
       <div className="max-w-md mx-auto">
@@ -123,7 +166,7 @@ const ReviewForm = () => {
           className="bg-white rounded-lg shadow-medium overflow-hidden"
         >
           {/* Header with business branding */}
-          <div 
+          <div
             className="p-6 text-white text-center"
             style={{ backgroundColor: business.primaryColor || '#3D82FF' }}
           >

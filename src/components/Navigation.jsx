@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 
-const { FiHome, FiSettings, FiMail, FiBarChart3, FiMenu, FiX } = FiIcons;
+const { FiHome, FiSettings, FiMail, FiBarChart3, FiMenu, FiX, FiServer, FiList, FiTrendingUp } = FiIcons;
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +14,10 @@ const Navigation = () => {
     { path: '/', label: 'Dashboard', icon: FiHome },
     { path: '/setup', label: 'Setup', icon: FiSettings },
     { path: '/templates', label: 'Templates', icon: FiMail },
-    { path: '/analytics', label: 'Analytics', icon: FiBarChart3 }
+    { path: '/analytics', label: 'Analytics', icon: FiBarChart3 },
+    { path: '/email-analytics', label: 'Email Analytics', icon: FiTrendingUp },
+    { path: '/smtp', label: 'SMTP Config', icon: FiServer },
+    { path: '/email-logs', label: 'Email Logs', icon: FiList }
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -33,7 +36,7 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -51,7 +54,7 @@ const Navigation = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 rounded-md text-neutral-600 hover:text-primary-500 hover:bg-gray-50"
@@ -68,7 +71,7 @@ const Navigation = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="md:hidden bg-white border-t border-gray-200"
+          className="lg:hidden bg-white border-t border-gray-200"
         >
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navItems.map((item) => (
