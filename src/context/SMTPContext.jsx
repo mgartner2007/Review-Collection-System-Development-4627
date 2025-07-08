@@ -74,9 +74,8 @@ export const SMTPProvider = ({ children }) => {
 
       localStorage.setItem('smtpConfig', JSON.stringify(encryptedConfig));
       setConfig(encryptedConfig);
-      
       await checkConnectionStatus();
-      
+
       return { success: true, message: 'Configuration saved successfully' };
     } catch (error) {
       console.error('Error saving config:', error);
@@ -87,21 +86,21 @@ export const SMTPProvider = ({ children }) => {
   const testConnection = async (configData) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       const { serviceName, apiKey, fromEmail, domain } = configData;
-      
+
       if (!apiKey || apiKey.length < 10) {
         throw new Error('Invalid API key format');
       }
-      
+
       if (!fromEmail || !/\S+@\S+\.\S+/.test(fromEmail)) {
         throw new Error('Invalid from email address');
       }
-      
+
       if (serviceName === 'Mailgun' && !domain) {
         throw new Error('Domain is required for Mailgun');
       }
-      
+
       if (serviceName === 'SendGrid') {
         if (apiKey.startsWith('SG.')) {
           return { success: true, message: 'SendGrid connection successful!' };
@@ -115,7 +114,7 @@ export const SMTPProvider = ({ children }) => {
           throw new Error('Mailgun API key should start with "key-"');
         }
       }
-      
+
       return { success: true, message: 'Connection test successful!' };
     } catch (error) {
       throw new Error(error.message || 'Connection test failed');
@@ -130,34 +129,49 @@ export const SMTPProvider = ({ children }) => {
     try {
       const emailData = {
         to: testEmailAddress,
-        subject: 'SMTP Connection Successful',
+        subject: 'SMTP Connection Successful - Professional Template Test',
         html: `
           <html>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-              <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #30A46C;">SMTP Connection Successful!</h2>
-                <p>This is a test email from the Oholla app. Your SMTP integration is working correctly.</p>
-                <div style="background-color: #f0f7ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                  <h3 style="color: #3D82FF; margin: 0 0 10px 0;">Configuration Details:</h3>
-                  <ul style="margin: 0; padding-left: 20px;">
-                    <li><strong>Service:</strong> ${config.serviceName}</li>
-                    <li><strong>From Email:</strong> ${config.fromEmail}</li>
-                    <li><strong>From Name:</strong> ${config.fromName}</li>
-                    <li><strong>Test Time:</strong> ${new Date().toLocaleString()}</li>
-                  </ul>
-                </div>
-                <p>Your email system is ready to send review requests and notifications.</p>
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-                <p style="font-size: 12px; color: #666;">
-                  This email was sent from the Oholla SMTP test system.
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background-color: #e7f3ff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #3D82FF;">
+                <h2 style="color: #1e4d72; margin: 0;">SMTP Connection Successful! ✅</h2>
+              </div>
+              
+              <p>This is a test email from the Oholla review automation system. Your SMTP integration is working perfectly!</p>
+              
+              <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #3D82FF; margin: 0 0 15px 0;">Configuration Details:</h3>
+                <ul style="margin: 0; padding-left: 20px; color: #555;">
+                  <li style="margin-bottom: 8px;"><strong>Service:</strong> ${config.serviceName}</li>
+                  <li style="margin-bottom: 8px;"><strong>From Email:</strong> ${config.fromEmail}</li>
+                  <li style="margin-bottom: 8px;"><strong>From Name:</strong> ${config.fromName}</li>
+                  <li style="margin-bottom: 8px;"><strong>Test Time:</strong> ${new Date().toLocaleString()}</li>
+                </ul>
+              </div>
+              
+              <div style="background-color: #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #28a745;">
+                <p style="margin: 0;">
+                  <strong>🚀 Your email system is now ready to:</strong><br>
+                  • Send professional review requests<br>
+                  • Collect valuable customer feedback<br>
+                  • Automate follow-up communications<br>
+                  • Track engagement and performance
                 </p>
               </div>
+              
+              <p>The templates have been updated with professional, conversion-optimized copy that maintains a personal touch while encouraging maximum response rates.</p>
+              
+              <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+              <p style="font-size: 12px; color: #666;">
+                This email was sent from the Oholla SMTP test system.<br>
+                Professional email templates are now active and ready for deployment.
+              </p>
             </body>
           </html>
         `,
-        text: `SMTP Connection Successful!
+        text: `SMTP Connection Successful! ✅
 
-This is a test email from the Oholla app. Your SMTP integration is working correctly.
+This is a test email from the Oholla review automation system. Your SMTP integration is working perfectly!
 
 Configuration Details:
 - Service: ${config.serviceName}
@@ -165,20 +179,34 @@ Configuration Details:
 - From Name: ${config.fromName}
 - Test Time: ${new Date().toLocaleString()}
 
-Your email system is ready to send review requests and notifications.
+🚀 Your email system is now ready to:
+• Send professional review requests
+• Collect valuable customer feedback
+• Automate follow-up communications
+• Track engagement and performance
+
+The templates have been updated with professional, conversion-optimized copy that maintains a personal touch while encouraging maximum response rates.
 
 ---
-This email was sent from the Oholla SMTP test system.`,
+This email was sent from the Oholla SMTP test system.
+Professional email templates are now active and ready for deployment.`,
         type: 'Test Email',
         provider: config.serviceName
       };
 
       const result = await sendEmail(emailData);
-      setLastTestResult({ success: true, message: `Test email sent successfully to ${testEmailAddress}` });
+      setLastTestResult({
+        success: true,
+        message: `Professional template test email sent successfully to ${testEmailAddress}`
+      });
+
       return result;
     } catch (error) {
       const errorMessage = error.message || 'Failed to send test email';
-      setLastTestResult({ success: false, message: errorMessage });
+      setLastTestResult({
+        success: false,
+        message: errorMessage
+      });
       throw new Error(errorMessage);
     }
   };
@@ -205,7 +233,7 @@ This email was sent from the Oholla SMTP test system.`,
       }
 
       const decryptedApiKey = decryptApiKey(config.apiKey);
-      
+
       // Simulate sending email based on provider
       let result;
       if (config.serviceName === 'SendGrid') {
@@ -225,7 +253,11 @@ This email was sent from the Oholla SMTP test system.`,
 
       incrementEmailCount();
 
-      return { success: true, messageId: result.messageId, logId: logEntry?.id };
+      return {
+        success: true,
+        messageId: result.messageId,
+        logId: logEntry?.id
+      };
     } catch (error) {
       console.error('Error sending email:', error);
       throw new Error('Failed to send email: ' + error.message);
@@ -240,7 +272,9 @@ This email was sent from the Oholla SMTP test system.`,
       // In production, this would make a real API call to SendGrid
       console.log('Sending via SendGrid:', emailData);
       
-      return { messageId: `sg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` };
+      return {
+        messageId: `sg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      };
     } catch (error) {
       throw new Error(`SendGrid send failed: ${error.message}`);
     }
@@ -254,7 +288,9 @@ This email was sent from the Oholla SMTP test system.`,
       // In production, this would make a real API call to Mailgun
       console.log('Sending via Mailgun:', emailData);
       
-      return { messageId: `mg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` };
+      return {
+        messageId: `mg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      };
     } catch (error) {
       throw new Error(`Mailgun send failed: ${error.message}`);
     }
@@ -263,20 +299,28 @@ This email was sent from the Oholla SMTP test system.`,
   const getEmailTemplates = () => {
     return {
       reviewRequest: {
-        subject: 'How was your experience with {{business.name}}?',
+        subject: 'Quick favor? How was your experience with {{business.name}}?',
         template: 'review_request'
       },
       reviewReminder: {
-        subject: 'Quick reminder: Share your experience with {{business.name}}',
+        subject: 'Just following up - Your experience with {{business.name}}',
         template: 'review_reminder'
       },
       thankYou: {
-        subject: 'Thank you for your review!',
+        subject: 'Thank you! Your review means the world to us',
         template: 'thank_you'
       },
       negativeFeedback: {
-        subject: 'Thank you for your feedback - We want to make this right',
+        subject: 'Thank you for your honest feedback - Let\'s make this right',
         template: 'negative_feedback'
+      },
+      welcome: {
+        subject: 'Welcome to {{business.name}} - We\'re excited to serve you!',
+        template: 'welcome'
+      },
+      followUp: {
+        subject: 'How did we do? Your experience matters to us',
+        template: 'follow_up'
       }
     };
   };
